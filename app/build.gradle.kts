@@ -1,12 +1,14 @@
 import java.util.Properties
 import java.io.FileInputStream
 import java.io.File
-
+import org.gradle.api.GradleException
 
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.hilt)
+    alias(libs.plugins.ksp)
 }
 
 fun loadProperties(projectRootDir: File): Properties {
@@ -16,17 +18,15 @@ fun loadProperties(projectRootDir: File): Properties {
         try {
             FileInputStream(localPropertiesFile).use { properties.load(it) }
         } catch (e: Exception) {
-            println("Warning: Could not load local.properties file: ${e.message}")
+            // Consider logging the error properly
         }
     } else {
-        println("Warning: local.properties file not found at ${localPropertiesFile.absolutePath}")
+        // Consider logging this warning properly
     }
     return properties
 }
 
-
 val localProperties = loadProperties(rootProject.rootDir)
-println("Loaded properties: ${localProperties.keys}")
 
 android {
     namespace = "com.example.habittracker"
@@ -46,7 +46,8 @@ android {
         val supabaseAnonKey = localProperties.getProperty("supabase.anon.key", "")
 
         if (supabaseUrl.isEmpty() || supabaseAnonKey.isEmpty()) {
-            println("Warning: Supabase URL or Anon Key not found in local.properties. BuildConfig fields will be empty.")
+            // Consider throwing GradleException for required keys
+            // throw GradleException("Supabase URL or Anon Key missing in local.properties")
         }
 
         buildConfigField("String", "SUPABASE_URL", "\"$supabaseUrl\"")
@@ -55,23 +56,19 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = false // Set to true for production release
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-
         }
-        debug {
-        }
+        debug {}
     }
     compileOptions {
-
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
     kotlinOptions {
-
         jvmTarget = "1.8"
     }
     buildFeatures {
@@ -79,7 +76,9 @@ android {
         buildConfig = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
+        // IMPORTANT: Verify this version is compatible with your Kotlin version (2.0.21)
+        // Check https://developer.android.com/jetpack/androidx/releases/compose-kotlin
+        kotlinCompilerExtensionVersion = "1.5.11" // Assuming 1.5.11 or later is needed for Kotlin 2.0+
     }
     packaging {
         resources {
@@ -89,22 +88,27 @@ android {
 }
 
 dependencies {
-
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
+    implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.ui.tooling.preview)
-    implementation(libs.androidx.material3)
-
-
+    debugImplementation(libs.androidx.ui.tooling)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.androidx.lifecycle.runtime.compose)
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.compiler)
+    implementation(libs.androidx.hilt.navigation.compose)
+    implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.supabase.gotrue)
+    implementation(libs.supabase.postgrest)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.ui.test.junit4)
-    debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 }
