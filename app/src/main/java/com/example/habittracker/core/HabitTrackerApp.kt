@@ -1,4 +1,4 @@
-package com.example.habittracker
+package com.example.habittracker.core
 
 import android.app.Application
 import dagger.hilt.android.HiltAndroidApp
