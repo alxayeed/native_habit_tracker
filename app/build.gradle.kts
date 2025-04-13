@@ -105,6 +105,7 @@ dependencies {
     ksp(libs.hilt.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.ktor.client.okhttp)
     implementation(libs.supabase.gotrue)
     implementation(libs.supabase.postgrest)
     testImplementation(libs.junit)

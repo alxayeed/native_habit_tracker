@@ -22,6 +22,9 @@ object AppModule {
         val supabaseUrl = BuildConfig.SUPABASE_URL
         val supabaseAnonKey = BuildConfig.SUPABASE_ANON_KEY
 
+        println("BuildConfig URL: '${BuildConfig.SUPABASE_URL}'")
+        println("BuildConfig Key: '${BuildConfig.SUPABASE_ANON_KEY}'")
+
         if (supabaseUrl.isBlank() || supabaseAnonKey.isBlank()) {
             throw IllegalStateException(
                 "Supabase URL or Anon Key is missing in BuildConfig. " +
