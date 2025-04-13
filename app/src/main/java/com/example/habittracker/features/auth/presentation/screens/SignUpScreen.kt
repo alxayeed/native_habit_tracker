@@ -13,9 +13,9 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
-import com.example.habittracker.core.presentation.BasicTextField
-import com.example.habittracker.core.presentation.PasswordTextField
-import com.example.habittracker.core.presentation.PrimaryButton
+import com.example.habittracker.core.presentation.components.BasicTextField
+import com.example.habittracker.core.presentation.components.PasswordTextField
+import com.example.habittracker.core.presentation.components.PrimaryButton
 import com.example.habittracker.features.auth.presentation.viewmodel.AuthViewModel
 
 @Composable

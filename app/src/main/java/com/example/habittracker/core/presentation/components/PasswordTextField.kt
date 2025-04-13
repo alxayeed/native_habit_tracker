@@ -1,4 +1,4 @@
-package com.example.habittracker.core.presentation
+package com.example.habittracker.core.presentation.components
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.KeyboardActions
