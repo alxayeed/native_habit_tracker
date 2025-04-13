@@ -1,7 +1,8 @@
 package com.example.habittracker.features.auth.domain.repository
 
-import com.example.habittracker.core.domain.model.User
-import com.example.habittracker.core.util.SimpleResult
+import com.example.habittracker.core.domain.entity.User
+import com.example.habittracker.core.domain.util.SimpleResult
+import com.example.habittracker.features.auth.domain.entity.AuthStatus
 import kotlinx.coroutines.flow.Flow
 
 interface AuthRepository {

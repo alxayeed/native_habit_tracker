@@ -9,7 +9,6 @@ class GetAuthStatusUseCase @Inject constructor(
     private val repository: AuthRepository
 ) {
     operator fun invoke(): Flow<AuthStatus> {
-        // Directly exposes the flow from the repository
         return repository.getSessionStatus()
     }
 }

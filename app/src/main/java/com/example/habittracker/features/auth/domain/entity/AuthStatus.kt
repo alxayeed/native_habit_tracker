@@ -1,6 +1,6 @@
 package com.example.habittracker.features.auth.domain.entity
 
-import com.example.habittracker.core.domain.model.User
+import com.example.habittracker.core.domain.entity.User
 
 sealed class AuthStatus {
     data object Loading : AuthStatus() // Initial state or during auth operations

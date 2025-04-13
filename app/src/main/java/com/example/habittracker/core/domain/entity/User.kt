@@ -1,4 +1,4 @@
-package com.example.habittracker.core.domain.model
+package com.example.habittracker.core.domain.entity
 
 data class User(
     val id: String,

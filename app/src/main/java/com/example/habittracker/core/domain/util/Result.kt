@@ -1,4 +1,4 @@
-package com.example.habittracker.core.util
+package com.example.habittracker.core.domain.util
 
 
 // Simple Result wrapper using Kotlin's built-in Result but making it easier to handle
