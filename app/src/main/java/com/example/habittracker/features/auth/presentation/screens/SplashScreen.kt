@@ -19,11 +19,12 @@ import com.example.habittracker.features.auth.presentation.viewmodel.AuthViewMod
 @Composable
 fun SplashScreen(
     navController: NavHostController,
-    viewModel: AuthViewModel = hiltViewModel() // Get ViewModel via Hilt
+    viewModel: AuthViewModel = hiltViewModel()
 ) {
     val authState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    LaunchedEffect(authState.authStatus) { // Re-run when authStatus changes
+    LaunchedEffect(authState.authStatus) {
+        kotlinx.coroutines.delay(1500L)
         when (authState.authStatus) {
             is AuthStatus.Authenticated -> {
                 navController.navigate(Routes.HOME_SCREEN) {
