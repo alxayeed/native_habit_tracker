@@ -108,6 +108,10 @@ class AuthViewModel @Inject constructor(
         _uiState.update { it.copy(error = null) }
     }
 
+    fun showError(message: String) {
+        _uiState.update { it.copy(error = message, isLoading = false) }
+    }
+
     fun resetPasswordSentFlag() {
         _uiState.update { it.copy(resetEmailSent = false) }
     }

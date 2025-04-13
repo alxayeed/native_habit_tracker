@@ -6,6 +6,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController // Import KeyboardController
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -17,7 +18,7 @@ import com.example.habittracker.core.navigation.Routes
 import com.example.habittracker.core.presentation.BasicTextField
 import com.example.habittracker.core.presentation.PasswordTextField
 import com.example.habittracker.core.presentation.PrimaryButton
-
+import com.example.habittracker.features.auth.domain.entity.AuthStatus // Import AuthStatus
 import com.example.habittracker.features.auth.presentation.viewmodel.AuthViewModel
 
 @Composable
@@ -27,18 +28,35 @@ fun LoginScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
+    val keyboardController = LocalSoftwareKeyboardController.current // Get keyboard controller
 
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
+    // --- React to Auth Status Changes for Navigation ---
+    LaunchedEffect(key1 = uiState.authStatus) {
+        if (uiState.authStatus is AuthStatus.Authenticated) {
+            // Navigate to Home & Clear Login/Splash from back stack
+            navController.navigate(Routes.HOME_SCREEN) {
+                popUpTo(navController.graph.startDestinationId) { // Pop up to the start destination of the graph
+                    inclusive = true
+                }
+                // Ensure only one copy of HomeScreen is launched
+                launchSingleTop = true
+            }
+        }
+    }
+    // --------------------------------------------------
+
     // Handle errors with Snackbar
     LaunchedEffect(key1 = uiState.error) {
         uiState.error?.let { message ->
+            keyboardController?.hide() // Hide keyboard on error
             snackbarHostState.showSnackbar(
                 message = message,
                 duration = SnackbarDuration.Short
             )
-            viewModel.dismissError() // Clear error after showing
+            viewModel.dismissError()
         }
     }
 
@@ -49,7 +67,7 @@ fun LoginScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .padding(horizontal = 24.dp), // Add horizontal padding
+                .padding(horizontal = 24.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -74,7 +92,8 @@ fun LoginScreen(
                 value = password,
                 onValueChange = { password = it },
                 labelText = "Password",
-                imeAction = ImeAction.Done // TODO: Add keyboard action to trigger login maybe
+                imeAction = ImeAction.Done
+                // TODO: Add keyboard action to trigger login
             )
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -94,12 +113,11 @@ fun LoginScreen(
             PrimaryButton(
                 text = "Login",
                 onClick = {
-                    // Basic UI validation (or move to ViewModel)
+                    keyboardController?.hide()
                     if (email.isNotBlank() && password.isNotBlank()) {
                         viewModel.login(email, password)
                     } else {
-                        // TODO: Show local validation error (e.g., update text field isError)
-                        println("Email or password blank")
+                        viewModel.showError("Email and password cannot be blank.") // Show error via ViewModel/Snackbar
                     }
                 },
                 isLoading = uiState.isLoading,
@@ -120,15 +138,17 @@ fun LoginScreen(
     }
 }
 
-// Basic Preview (won't interact with ViewModel)
-@androidx.compose.ui.tooling.preview.Preview(showBackground = true)
-@Composable
-fun LoginScreenPreview() {
-    com.example.habittracker.ui.theme.HabitTrackerTheme { // Use your theme path
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            Text("Login Screen Preview Area")
-            // You could build a static version of the Column here for preview
-            // if needed, without ViewModel/NavController interaction.
-        }
+// Add a simple showError method to the ViewModel for local validation feedback
+// Modify AuthViewModel.kt:
+/*
+@HiltViewModel
+class AuthViewModel @Inject constructor(...) : ViewModel() {
+    // ... existing code ...
+
+    fun showError(message: String) {
+        _uiState.update { it.copy(error = message, isLoading = false) }
     }
+
+    // ... rest of ViewModel ...
 }
+*/

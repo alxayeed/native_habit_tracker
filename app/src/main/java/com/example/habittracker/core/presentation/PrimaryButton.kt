@@ -24,16 +24,16 @@ fun PrimaryButton(
     Button(
         onClick = onClick,
         modifier = modifier,
-        enabled = enabled && !isLoading, // Disable if loading or explicitly disabled
+        enabled = enabled && !isLoading,
         contentPadding = PaddingValues(vertical = 12.dp, horizontal = 24.dp)
     ) {
         if (isLoading) {
             CircularProgressIndicator(
                 modifier = Modifier.size(ButtonDefaults.IconSize),
-                color = MaterialTheme.colorScheme.onPrimary, // Spinner color on button
+                color = MaterialTheme.colorScheme.onPrimary,
                 strokeWidth = 2.dp
             )
-            Spacer(modifier = Modifier.width(ButtonDefaults.IconSpacing)) // Space between spinner and text
+            Spacer(modifier = Modifier.width(ButtonDefaults.IconSpacing))
         }
         Text(text = text)
     }

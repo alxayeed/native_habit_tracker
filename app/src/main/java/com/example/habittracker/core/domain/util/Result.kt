@@ -12,7 +12,7 @@ inline fun runOperationCatching(block: () -> Unit): SimpleResult {
         block()
         Result.success(Unit)
     } catch (e: Exception) {
-        println("Operation failed: ${e.message}") // Log the error
+        println("Operation failed: ${e.message}")
         Result.failure(e)
     }
 }
